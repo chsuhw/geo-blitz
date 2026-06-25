@@ -1,0 +1,265 @@
+/* Общие стили для всех страниц */
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(173, 216, 230, 0.3);
+    z-index: -1;
+}
+
+/* Шапка с счётом и таймером (только для игровых страниц) */
+.header {
+    position: fixed;
+    top: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 10;
+}
+
+.score, .timer {
+    font-size: 1.5em;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.score {
+    color: #0077b6;
+}
+
+.timer {
+    color: #e74c3c;
+}
+
+/* Заголовки */
+h1 {
+    font-size: 5em;
+    color: #0077b6;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2.5em;
+    color: #005691;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+h3 {
+    font-size: 1.5em;
+    color: #005691;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Контейнер с вопросом (только для игровых страниц) */
+.question-container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 90%;
+    margin-bottom: 20px;
+}
+
+/* Описание страны (только для игровых страниц) */
+.description {
+    font-size: 1.2em;
+    color: #005691;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Варианты ответов (только для игровых страниц) */
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.option-button {
+    padding: 12px;
+    font-size: 1.1em;
+    color: white;
+    background: #4585c3;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.option-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Сообщение о результате (только для игровых страниц) */
+.result-message {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #0077b6;
+    min-height: 24px;
+}
+
+/* Контейнер для сообщения об окончании игры */
+.game-over-container {
+    flex-direction: column;
+    align-items: center;
+    display: none;
+}
+
+.game-over-message {
+    font-size: 2em;
+    font-weight: bold;
+    color: #822fe9;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Кнопка возврата на главный экран */
+.back-button {
+    padding: 12px 24px;
+    font-size: 1.2em;
+    color: white;
+    background: #4585c3;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Кнопки главного меню */
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.button {
+    display: block;
+    padding: 15px;
+    font-size: 1.1em;
+    color: white;
+    background: #0254c4;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.option-field {
+    padding: 12px;
+    font-size: 1.1em;
+    color: white;
+    background: #ffffff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 600px;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+@media (max-width: 480px) {
+    .button-row {
+        flex-direction: column; /* На телефонах снова ставим друг под друга */
+    }
+}
+
+/* Стили для таблиц лидеров */
+.leaderboard-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    border: 1px solid #ddd;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+.leaderboard-table th {
+    background-color: #0254c4;
+    color: white;
+}
+
+.leaderboard-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+    .leaderboard-table {
+        font-size: 0.8em;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 8px 4px;
+    }
+}
+
+#by-description, #by-outline, #by-flag, #by-currency, #leaderboard,
+#back-to-main, #regbutton, #authbutton {
+    background: #4585c3;
+}

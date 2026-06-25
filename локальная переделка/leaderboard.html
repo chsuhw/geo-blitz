@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таблица рекордов</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background-image: url('backgrounds/background.png');">
+    <div class="question-container">
+        <h3>Рекорды всех пользователей</h3>
+        <div class="leaderboard-container">
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Имя игрока</th>
+                        <th>Режим игры</th>
+                        <th>Очки</th>
+                        <th>Время</th>
+                    </tr>
+                </thead>
+                <tbody id="global-leaderboard">
+                    <!-- Данные будут подгружены через JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <h3>Ваши рекорды</h3>
+        <div class="leaderboard-container">
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Режим игры</th>
+                        <th>Очки</th>
+                        <th>Время</th>
+                    </tr>
+                </thead>
+                <tbody id="user-leaderboard">
+                    <!-- Данные будут подгружены через JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <button class="button" id="back-to-main" onclick="window.location.href='index.html'">Вернуться в главное меню</button>
+
+    <script>
+        const nickname = localStorage.getItem('nickname');
+        const playersData = JSON.parse(localStorage.getItem('playersData')) || [];
+
+        // Загрузка глобальных рекордов
+        function loadGlobalLeaderboard() {
+            const modes = ['по описанию', 'по очертанию', 'по флагу', 'по валюте'];
+            const topScores = [];
+
+            modes.forEach(mode => {
+                const modeScores = playersData.filter(record => record.gamemode === mode);
+                if (modeScores.length > 0) {
+                    const topScore = modeScores.reduce((prev, current) =>
+                        (prev.bestscore > current.bestscore) ? prev : current
+                    );
+                    topScores.push(topScore);
+                } else {
+                    topScores.push({
+                        nickname: '—',
+                        gamemode: mode,
+                        bestscore: 0,
+                        date: '—'
+                    });
+                }
+            });
+
+            // Сортировка по очкам
+            topScores.sort((a, b) => b.bestscore - a.bestscore);
+
+            const tbody = document.getElementById('global-leaderboard');
+            tbody.innerHTML = '';
+            topScores.forEach(score => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${score.nickname}</td>
+                    <td>${score.gamemode}</td>
+                    <td>${score.bestscore}</td>
+                    <td>${score.date}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Загрузка рекордов пользователя
+        function loadUserLeaderboard() {
+            const userScores = playersData.filter(record => record.nickname === nickname);
+            const tbody = document.getElementById('user-leaderboard');
+
+            if (userScores.length > 0) {
+                tbody.innerHTML = '';
+                userScores.forEach(score => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${score.gamemode}</td>
+                        <td>${score.bestscore}</td>
+                        <td>${score.date}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="3">У вас пока нет рекордов.</td></tr>';
+            }
+        }
+
+        // Загрузка данных
+        loadGlobalLeaderboard();
+        loadUserLeaderboard();
+    </script>
+</body>
+</html>

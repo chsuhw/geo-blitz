@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background-image: url('backgrounds/background.png');">
+    <div class="question-container">
+        <form id="registrationForm">
+            <div>
+                <h3 for="nickname">Имя пользователя:</h3>
+                <input type="text" id="nickname" name="nickname" required class="option-field" style="color: black; width: 96%; margin-bottom: 10px;">
+            </div>
+            <div>
+                <h3 for="passwd">Пароль:</h3>
+                <input type="password" id="passwd" name="passwd" required class="option-field" style="color: black; width: 96%; margin-bottom: 10px;">
+            </div>
+            <div class="button-row">
+                <button type="submit" class="button" id="regbutton">Зарегистрироваться</button>
+                <button type="button" onclick="window.location.href='auth.html'" class="button" id="authbutton">Уже зарегистрированы?</button>
+            </div>
+        </form>
+        <div id="result-message"></div>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nickname = document.getElementById('nickname').value;
+            const passwd = document.getElementById('passwd').value;
+
+            // Чтение пользователей из localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Проверка, существует ли пользователь
+            if (users.some(u => u.nickname === nickname)) {
+                document.getElementById('result-message').innerHTML = '<div class="result-message" style="color: #e74c3c;">Имя уже занято, попробуйте другое.</div>';
+                return;
+            }
+
+            // Добавление нового пользователя
+            users.push({ nickname, passwd });
+            localStorage.setItem('users', JSON.stringify(users));
+
+            document.getElementById('result-message').innerHTML = '<div class="result-message" style="color: #2ecc71;">Регистрация успешна!</div>';
+            setTimeout(() => {
+                window.location.href = 'auth.html';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результат</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background-image: url('backgrounds/background_rest.png');">
+    <div class="question-container">
+        <h2>Ваш результат</h2>
+        <h3 id="score-message">Загрузка...</h3>
+        <div class="button-row">
+            <button class="button" onclick="window.location.href='index.html'" id="back-to-main">Вернуться на главный экран</button>
+            <button class="button" onclick="window.location.href='leaderboard.html'" id="back-to-main">Таблица рекордов</button>
+        </div>
+    </div>
+
+    <script>
+        const nickname = localStorage.getItem('nickname');
+        const urlParams = new URLSearchParams(window.location.search);
+        const gamemode = urlParams.get('gamemode') || 'по описанию';
+
+        function loadResult() {
+            const playersData = JSON.parse(localStorage.getItem('playersData')) || [];
+            const userRecord = playersData.find(
+                record => record.nickname === nickname && record.gamemode === gamemode
+            );
+
+            if (userRecord) {
+                document.getElementById('score-message').textContent = `Вы набрали ${userRecord.temp} очков!`;
+            } else {
+                document.getElementById('score-message').textContent = 'Результат не найден.';
+            }
+        }
+
+        loadResult();
+    </script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Угадай страну по валюте</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background-image: url('backgrounds/background_curr.png');">
+    <div class="header">
+        <div class="score">Счёт: <span id="score-value">0</span></div>
+        <div class="timer">Время: <span id="timer-value">15</span></div>
+    </div>
+    <h1></h1>
+    <h1></h1>
+    <h1></h1>
+    <div class="question-container">
+        <div class="result-message" id="result-message"></div>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img id="currency-image" src="" alt="Валюта" style="max-width: 100%; max-height: 200px; border-radius: 5px;">
+        </div>
+        <div class="options" id="options-container"></div>
+    </div>
+
+    <script>
+        // Встроенные данные о валютах
+        const currenciesData = `
+albania.jpg|Албания|Греция|Болгария|Черногория
+argentina.jpg|Аргентина|Бразилия|Чили|Уругвай
+armenia.jpg|Армения|Грузия|Азербайджан|Турция
+azerbaijan.jpg|Азербайджан|Армения|Грузия|Иран
+bahrain.jpg|Бахрейн|Катар|Оман|ОАЭ
+bangladesh.jpg|Бангладеш|Индия|Пакистан|Шри-Ланка
+bhutan.jpg|Бутан|Непал|Индия|Китай
+bolivia.jpg|Боливия|Перу|Чили|Аргентина
+bosnia.jpg|Босния и Герцеговина|Хорватия|Сербия|Словения
+brazil.jpg|Бразилия|Аргентина|Колумбия|Чили
+cambodia.jpg|Камбоджа|Вьетнам|Тайланд|Лаос
+chile.jpg|Чили|Аргентина|Перу|Боливия
+china.jpg|Китай|Япония|Корея|Вьетнам
+colombia.jpg|Колумбия|Бразилия|Перу|Венесуэла
+cyprus.jpg|Кипр|Греция|Турция|Ливан
+czech.jpg|Чехия|Словакия|Польша|Германия
+denmark.jpg|Дания|Швеция|Норвегия|Финляндия
+ecuador.jpg|Эквадор|Перу|Колумбия|Боливия
+egypt.jpg|Египет|Турция|Саудовская Аравия|Иран
+estonia.jpg|Эстония|Латвия|Литва|Финляндия
+finland.jpg|Финляндия|Швеция|Норвегия|Дания
+georgia.jpg|Грузия|Армения|Азербайджан|Россия
+germany.jpg|Германия|Франция|Польша|Австрия
+guyana.jpg|Гайана|Суринам|Бразилия|Венесуэла
+iceland.jpg|Исландия|Норвегия|Дания|Швеция
+india.jpg|Индия|Пакистан|Бангладеш|Непал
+indonesia.jpg|Индонезия|Малайзия|Тайланд|Филиппины
+iran.jpg|Иран|Ирак|Турция|Саудовская Аравия
+iraq.jpg|Ирак|Иран|Сирия|Турция
+ireland.jpg|Ирландия|Великобритания|Франция|Исландия
+israel.jpg|Израиль|Ливан|Сирия|Иордания
+italy.jpg|Италия|Франция|Испания|Греция
+japan.jpg|Япония|Китай|Корея|Вьетнам
+jordan.jpg|Иордания|Израиль|Сирия|Ливан
+kazakhstan.jpg|Казахстан|Узбекистан|Туркменистан|Киргизия
+kuwait.jpg|Кувейт|Саудовская Аравия|Катар|ОАЭ
+kyrgyzstan.jpg|Киргизия|Казахстан|Узбекистан|Таджикистан
+laos.jpg|Лаос|Вьетнам|Таиланд|Камбоджа
+latvia.jpg|Латвия|Эстония|Литва|Польша
+lithuania.jpg|Литва|Латвия|Эстония|Польша
+malaysia.jpg|Малайзия|Индонезия|Тайланд|Сингапур
+mexico.jpg|Мексика|США|Канада|Бразилия
+mongolia.jpg|Монголия|Китай|Россия|Казахстан
+nepal.jpg|Непал|Индия|Бутан|Китай
+northkorea.jpg|Северная Корея|Южная Корея|Китай|Япония
+norway.jpg|Норвегия|Швеция|Дания|Финляндия
+oman.jpg|Оман|ОАЭ|Саудовская Аравия|Йемен
+pakistan.jpg|Пакистан|Индия|Афганистан|Иран
+paraguay.jpg|Парагвай|Аргентина|Бразилия|Уругвай
+peru.jpg|Перу|Чили|Боливия|Эквадор
+philippines.jpg|Филиппины|Индонезия|Малайзия|Тайланд
+portugal.jpg|Португалия|Испания|Франция|Италия
+qatar.jpg|Катар|ОАЭ|Саудовская Аравия|Оман
+russia.jpg|Россия|Украина|Белоруссия|Казахстан
+saudiarabia.jpg|Саудовская Аравия|ОАЭ|Катар|Оман
+serbia.jpg|Сербия|Хорватия|Босния|Словения
+singapore.jpg|Сингапур|Малайзия|Индонезия|Тайланд
+slovakia.jpg|Словакия|Чехия|Польша|Венгрия
+slovenia.jpg|Словения|Хорватия|Босния|Сербия
+southkorea.jpg|Южная Корея|Япония|Китай|Северная Корея
+srilanka.jpg|Шри-Ланка|Индия|Бангладеш|Непал
+suriname.jpg|Суринам|Гайана|Бразилия|Венесуэла
+sweden.jpg|Швеция|Норвегия|Дания|Финляндия
+syria.jpg|Сирия|Ливан|Иордания|Ирак
+taiwan.jpg|Тайвань|Китай|Япония|Филиппины
+tajikistan.jpg|Таджикистан|Узбекистан|Киргизия|Казахстан
+thailand.jpg|Таиланд|Вьетнам|Лаос|Камбоджа
+turkey.jpg|Турция|Греция|Болгария|Сирия
+turkmenistan.jpg|Туркменистан|Узбекистан|Казахстан|Иран
+uae.jpg|ОАЭ|Саудовская Аравия|Катар|Оман
+uk.jpg|Великобритания|Франция|Германия|Ирландия
+uruguay.jpg|Уругвай|Аргентина|Бразилия|Парагвай
+usa.jpg|США|Канада|Мексика|Бразилия
+venezuela.jpg|Венесуэла|Колумбия|Бразилия|Гайана
+vietnam.jpg|Вьетнам|Таиланд|Лаос|Камбоджа
+        `.trim();
+
+        // Переменные для игры
+        let score = 0;
+        let timer;
+        let timeLeft = 15;
+        let currentQuestion = {};
+        let questions = [];
+        let usedQuestionsIndices = [];
+        const maxQuestions = 25;
+        let questionCount = 0;
+        const nickname = localStorage.getItem('nickname');
+        const gamemode = "по валюте";
+
+        // Проверка авторизации
+        if (!nickname) {
+            window.location.href = 'auth.html';
+        }
+
+        // Загрузка данных о валютах
+        function loadCurrencies() {
+            const lines = currenciesData.split('\n');
+            lines.forEach(line => {
+                if (line.trim() !== '') {
+                    const parts = line.split('|');
+                    if (parts.length === 5) {
+                        questions.push({
+                            currency: parts[0].trim(),
+                            correctAnswer: parts[1].trim(),
+                            options: parts.slice(1).map(opt => opt.trim())
+                        });
+                    }
+                }
+            });
+            if (questions.length < maxQuestions) {
+                alert(`В файле недостаточно вопросов. Требуется минимум ${maxQuestions} вопросов.`);
+                return;
+            }
+            nextQuestion();
+        }
+
+        // Функция для выбора случайного вопроса
+        function getRandomQuestion() {
+            if (usedQuestionsIndices.length >= questions.length) {
+                usedQuestionsIndices = [];
+            }
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * questions.length);
+            } while (usedQuestionsIndices.includes(randomIndex));
+            usedQuestionsIndices.push(randomIndex);
+            return questions[randomIndex];
+        }
+
+        // Функция для запуска таймера
+        function startTimer() {
+            timeLeft = 15;
+            document.getElementById('timer-value').textContent = timeLeft;
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-value').textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showResult(false);
+                }
+            }, 1000);
+        }
+
+        // Функция для отображения результата
+        function showResult(isCorrect) {
+            const resultMessage = document.getElementById('result-message');
+            if (isCorrect) {
+                const points = Math.floor(timeLeft);
+                score += points;
+                document.getElementById('score-value').textContent = score;
+                resultMessage.textContent = `Правильно! +${points} баллов`;
+                resultMessage.style.color = "#2ecc71";
+            } else {
+                resultMessage.textContent = `Правильный ответ: ${currentQuestion.correctAnswer}`;
+                resultMessage.style.color = "#e74c3c";
+            }
+            setTimeout(nextQuestion, 2000);
+        }
+
+        // Функция для генерации вопроса
+        function generateQuestion() {
+            currentQuestion = getRandomQuestion();
+            const currencyImage = document.getElementById('currency-image');
+            currencyImage.src = `currencies/${currentQuestion.currency}`;
+            document.getElementById('result-message').textContent = '';
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            const shuffledOptions = [...currentQuestion.options].sort(() => Math.random() - 0.5);
+            shuffledOptions.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.textContent = option;
+                button.onclick = () => {
+                    clearInterval(timer);
+                    if (option === currentQuestion.correctAnswer) {
+                        showResult(true);
+                    } else {
+                        showResult(false);
+                    }
+                };
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // Функция для перехода к следующему вопросу
+        function nextQuestion() {
+            questionCount++;
+            if (questionCount <= maxQuestions) {
+                generateQuestion();
+                startTimer();
+            } else {
+                saveScore();
+            }
+        }
+
+        // Функция для сохранения счёта
+        function saveScore() {
+            const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            let playersData = JSON.parse(localStorage.getItem('playersData')) || [];
+
+            const existingRecordIndex = playersData.findIndex(
+                record => record.nickname === nickname && record.gamemode === gamemode
+            );
+
+            if (existingRecordIndex !== -1) {
+                if (score > playersData[existingRecordIndex].bestscore) {
+                    playersData[existingRecordIndex].bestscore = score;
+                    playersData[existingRecordIndex].date = currentDate;
+                }
+                playersData[existingRecordIndex].temp = score;
+            } else {
+                playersData.push({
+                    nickname,
+                    gamemode,
+                    bestscore: score,
+                    temp: score,
+                    date: currentDate
+                });
+            }
+
+            localStorage.setItem('playersData', JSON.stringify(playersData));
+            window.location.href = `result.html?gamemode=${encodeURIComponent(gamemode)}`;
+        }
+
+        // Запуск игры
+        loadCurrencies();
+    </script>
+</body>
+</html>
